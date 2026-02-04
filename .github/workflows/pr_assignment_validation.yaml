@@ -6,7 +6,7 @@ on:
 
 permissions:
   pull-requests: write
-  issues: write
+  issues: read
 
 jobs:
   validate-assignment:
@@ -21,10 +21,10 @@ jobs:
             const author = pr.user.login;
             const body = pr.body || "";
 
-            // Skip if already marked
+            // Skip if already labeled
             const existingLabels = pr.labels.map(l => l.name);
             if (existingLabels.includes('not-assigned')) {
-              console.log('Already validated as not-assigned. Skipping.');
+              console.log('Already marked not-assigned. Skipping.');
               return;
             }
 
@@ -37,7 +37,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pr.number,
-                body: `Hey @${author} 👋\n\nPlease link the issue you are working on (e.g. **Fixes #123**) so assignment can be verified.`
+                body: `Hey @${author} 👋\n\nPlease link the issue you are working on (e.g. **Fixes #123**).`
               });
 
               await github.rest.issues.addLabels({
@@ -61,21 +61,9 @@ jobs:
 
                 const assignees = issue.data.assignees.map(a => a.login);
 
-                // Auto-assign if issue is free
-                if (assignees.length === 0) {
-                  await github.rest.issues.addAssignees({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: issueNumber,
-                    assignees: [author]
-                  });
-                  console.log(`Auto-assigned ${author} to issue #${issueNumber}`);
-                  return;
-                }
-
-                // Author already assigned → valid
+                // Valid only if PR author is assigned
                 if (assignees.includes(author)) {
-                  console.log('Author already assigned.');
+                  console.log('Author is assigned. PR is valid.');
                   return;
                 }
               } catch (e) {
@@ -83,12 +71,12 @@ jobs:
               }
             }
 
-            // Not assigned to any linked issue
+            // Not assigned to linked issue
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: pr.number,
-              body: `🚫 **PR Validation Failed**\n\nHey @${author}, you are not assigned to the linked issue.\n\nPlease ask a maintainer to assign the issue to you before continuing.`
+              body: `🚫 **PR Validation Failed**\n\nHey @${author}, you are not assigned to the linked issue.\n\nPlease ask a maintainer to assign the issue to you before opening a PR.`
             });
 
             await github.rest.issues.addLabels({
