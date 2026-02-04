@@ -1,0 +1,53 @@
+name: Duplicate Issue Detector
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+
+jobs:
+  duplicate-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Analyze issue similarity
+        id: similarity
+        uses: actions-cool/issues-similarity-analysis@v1
+        with:
+          # ---- Core accuracy ----
+          filter-threshold: 0.88          # higher = fewer false positives
+
+          comment-title: 'Potential Duplicate Issue'
+          comment-body: |
+            Hi @${{ github.actor }},
+
+            This issue appears **very similar** to one or more existing issues:
+
+            ${index}. **${title}**  
+            ${url}  
+            Similarity score: **${similarity}%**
+
+            If this is a duplicate, please:
+            - Close this issue
+            - Continue the discussion on the existing one
+
+            If not, feel free to clarify how this issue is different.
+
+          show-footer: true
+
+      # ---- Auto-label ONLY when confidence is very high ----
+      - name: Label as duplicate (high confidence)
+        if: |
+          steps.similarity.outputs.similar-issues-found == 'true' &&
+          steps.similarity.outputs.highest-similarity-score >= '80'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['duplicate']
+            });

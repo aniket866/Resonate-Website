@@ -1,0 +1,99 @@
+name: PR Assignment Validation
+
+on:
+  pull_request:
+    types: [opened, reopened, edited]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  validate-assignment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate PR issue assignment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const author = pr.user.login;
+            const body = pr.body || "";
+
+            // Skip if already marked
+            const existingLabels = pr.labels.map(l => l.name);
+            if (existingLabels.includes('not-assigned')) {
+              console.log('Already validated as not-assigned. Skipping.');
+              return;
+            }
+
+            // Match Fixes #123 / Closes #123 / Resolves #123
+            const issueRegex = /(fixes|closes|resolves)\s+#(\d+)/gi;
+            const matches = [...body.matchAll(issueRegex)];
+
+            if (matches.length === 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: `Hey @${author} 👋\n\nPlease link the issue you are working on (e.g. **Fixes #123**) so assignment can be verified.`
+              });
+
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: ['not-assigned']
+              });
+              return;
+            }
+
+            for (const match of matches) {
+              const issueNumber = match[2];
+
+              try {
+                const issue = await github.rest.issues.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber
+                });
+
+                const assignees = issue.data.assignees.map(a => a.login);
+
+                // Auto-assign if issue is free
+                if (assignees.length === 0) {
+                  await github.rest.issues.addAssignees({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNumber,
+                    assignees: [author]
+                  });
+                  console.log(`Auto-assigned ${author} to issue #${issueNumber}`);
+                  return;
+                }
+
+                // Author already assigned → valid
+                if (assignees.includes(author)) {
+                  console.log('Author already assigned.');
+                  return;
+                }
+              } catch (e) {
+                console.log(`Failed to fetch issue #${issueNumber}`);
+              }
+            }
+
+            // Not assigned to any linked issue
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: `🚫 **PR Validation Failed**\n\nHey @${author}, you are not assigned to the linked issue.\n\nPlease ask a maintainer to assign the issue to you before continuing.`
+            });
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels: ['not-assigned']
+            });
