@@ -13,6 +13,23 @@ export const metadata = {
   title: "Resonate - Social Voice Platform",
   description:
     "Resonate is an Open Source social voice platform maintained by AOSSIE. Join rooms, talk to people, and connect with the community.",
+  metadataBase: new URL("https://resonate.aossie.org"), 
+  openGraph: {
+    title: "Resonate - Social Voice Platform",
+    description:
+      "Resonate is an Open Source social voice platform maintained by AOSSIE. Join rooms, talk to people, and connect with the community.",
+    url: "https://resonate.aossie.org",
+    siteName: "Resonate",
+    images: [
+      {
+        url: "/resonate_logo_white.svg",
+        width: 512,
+        height: 512,
+        alt: "Resonate Logo",
+      },
+    ],
+    type: "website",
+  },
   icons: {
     icon: "/resonate_logo_white.svg",
     apple: "/logo192.png",
