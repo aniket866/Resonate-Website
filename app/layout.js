@@ -9,20 +9,24 @@ const raleway = Raleway({
   display: "swap",
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#000000",
+};
+
 export const metadata = {
   title: "Resonate - Social Voice Platform",
-  description:
-    "Resonate is an Open Source social voice platform maintained by AOSSIE. Join rooms, talk to people, and connect with the community.",
-  metadataBase: new URL("https://resonate.aossie.org"), 
+  description: "Join rooms, talk to people, and connect with the community.",
+
+  metadataBase: new URL("https://resonate.aossie.org"),
   openGraph: {
     title: "Resonate - Social Voice Platform",
-    description:
-      "Resonate is an Open Source social voice platform maintained by AOSSIE. Join rooms, talk to people, and connect with the community.",
-    url: "https://resonate.aossie.org",
+    description: "Join rooms, talk to people, and connect with the community.",
     siteName: "Resonate",
     images: [
       {
-        url: "/resonate_logo_white.svg",
+        url: "/logo512.png",
         width: 512,
         height: 512,
         alt: "Resonate Logo",
@@ -30,13 +34,21 @@ export const metadata = {
     ],
     type: "website",
   },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Resonate - Social Voice Platform",
+    description:
+      "Resonate is an Open Source social voice platform maintained by AOSSIE.",
+    images: ["/logo512.png"],
+  },
+
   icons: {
     icon: "/resonate_logo_white.svg",
     apple: "/logo192.png",
   },
+
   manifest: "/manifest.json",
-  themeColor: "#000000",
-  viewport: "width=device-width, initial-scale=1",
 };
 
 export default function RootLayout({ children }) {
