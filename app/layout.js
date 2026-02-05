@@ -9,6 +9,12 @@ const raleway = Raleway({
   display: "swap",
 });
 
+export const viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata = {
   title: "Resonate - Social Voice Platform",
   description:
@@ -21,7 +27,7 @@ export const metadata = {
     siteName: "Resonate",
     images: [
       {
-        url: "/logo512.png", 
+        url: "/logo512.png",
         width: 512,
         height: 512,
         alt: "Resonate Logo",
