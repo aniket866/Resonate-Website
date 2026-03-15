@@ -44,8 +44,8 @@ export const metadata = {
   },
 
   icons: {
-    icon: "/resonate_logo_white.svg",
-    apple: "/logo192.png",
+    icon: "/resonate_logo_white.png",
+    apple: "/resonate_logo_white.png",
   },
 
   manifest: "/manifest.json",
@@ -56,7 +56,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={raleway.className}>
         <NavBar />
-        {children}
+        <main>
+          {children}
+        </main>
         <Footer />
       </body>
     </html>
