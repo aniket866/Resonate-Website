@@ -10,7 +10,7 @@ const raleway = Raleway({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://resonate-website-bt1h-git-open-graph-aniket866s-projects.vercel.app"),
+  metadataBase: new URL("https://resonatewebsiteopengraph.vercel.app"),
   title: "Resonate - Social Voice Platform",
   description:
     "Resonate is an Open Source social voice platform maintained by AOSSIE. Join rooms, talk to people, and connect with the community.",
@@ -25,7 +25,7 @@ export const metadata = {
     title: "Resonate - Social Voice Platform",
     description:
       "Resonate is an Open Source social voice platform maintained by AOSSIE. Join rooms, talk to people, and connect with the community.",
-    url: "https://resonate-website-bt1h-git-open-graph-aniket866s-projects.vercel.app",
+    url: "https://resonatewebsiteopengraph.vercel.app",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     type: "website",
   },
