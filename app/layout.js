@@ -10,6 +10,7 @@ const raleway = Raleway({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://resonate-website-bt1h-git-open-graph-aniket866s-projects.vercel.app"),
   title: "Resonate - Social Voice Platform",
   description:
     "Resonate is an Open Source social voice platform maintained by AOSSIE. Join rooms, talk to people, and connect with the community.",
@@ -20,6 +21,21 @@ export const metadata = {
   manifest: "/manifest.json",
   themeColor: "#000000",
   viewport: "width=device-width, initial-scale=1",
+  openGraph: {
+    title: "Resonate - Social Voice Platform",
+    description:
+      "Resonate is an Open Source social voice platform maintained by AOSSIE. Join rooms, talk to people, and connect with the community.",
+    url: "https://resonate-website-bt1h-git-open-graph-aniket866s-projects.vercel.app",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Resonate - Social Voice Platform",
+    description:
+      "Resonate is an Open Source social voice platform maintained by AOSSIE. Join rooms, talk to people, and connect with the community.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -27,7 +43,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={raleway.className}>
         <NavBar />
-        {children}
+        <main>
+          {children}
+        </main>
         <Footer />
       </body>
     </html>
